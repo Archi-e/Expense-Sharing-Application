@@ -1,7 +1,9 @@
 package dev.archie.ExpenseShare.controller;
 
+import dev.archie.ExpenseShare.dto.LoginRequestDTO;
 import dev.archie.ExpenseShare.dto.SignUpRequestDTO;
 import dev.archie.ExpenseShare.entity.User;
+import dev.archie.ExpenseShare.exception.InvalidLoginException;
 import dev.archie.ExpenseShare.exception.InvalidSignUpException;
 import dev.archie.ExpenseShare.mapper.UserEntityToDto;
 import dev.archie.ExpenseShare.service.UserService;
@@ -30,5 +32,22 @@ public class UserController {
                 )
         );
     }
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody LoginRequestDTO loginRequestDTO){
+        if(loginRequestDTO.getEmail() == null || loginRequestDTO.getPassword() == null){
+            throw new InvalidLoginException("Please enter valid credentials and try again");
+        }
+        return ResponseEntity.ok(
+                UserEntityToDto.toUserDto(
+                        userService.login(
+                                loginRequestDTO.getEmail(),
+                                loginRequestDTO.getPassword()
+                        )
+                )
+        );
+    }
+
+
 
 }
